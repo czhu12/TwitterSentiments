@@ -5,11 +5,11 @@ class RedisBridge:
     self.redis = redis.StrictRedis(host=host, port=port, db=db)
 
   def addToken(self, key, value=1):
-    print 'Saving key ' + key + '\n'
-    #if(self.rContains(key)):
-    #  self.rIncrement(key)
-    #else:
-    #  self.rAdd(key, value)
+    #print 'Saving key ' + key + '\n'
+    if(self.rContains(key)):
+      self.rIncrement(key)
+    else:
+      self.rAdd(key, value)
 
   def rContains(self, key):
     return self.redis.get(key) is not None

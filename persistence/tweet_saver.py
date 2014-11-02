@@ -1,7 +1,10 @@
 import nltk
+from filters.token_filters.punctuation_filter import PunctuationFilter
 from filters.raw_filters.exists_filter import ExistsFilter
 from parsers.raw_parsers.raw_tweet_parser import RawTweetParser
 from filters.retweet_filter import RetweetFilter
+
+from parsers.quotation_parser import QuotationParser
 
 from filters.filter_stream import FilterStream
 from redis_wrapper.redis_bridge import RedisBridge
@@ -15,9 +18,9 @@ class TweetSaver:
     self.rawParseStream = self.getRawParseStream()
     self.parseStream = self.getParseStream()
     self.filterStream = self.getFilterStream()
+    self.tokenFilterStream = self.getTokenFilterStream()
 
   def notify(self, raw_tweet):
-    print raw_tweet
     try: 
       self.handleNotification(raw_tweet)
     except UnicodeEncodeError:
@@ -34,7 +37,8 @@ class TweetSaver:
     tokenized = nltk.word_tokenize(parsedTweet)
     for i in range(0, len(tokenized)):
       token = tokenized[i]
-      self.redisBridge.addToken(token)
+      if self.tokenFilterStream.filter(token):
+        self.redisBridge.addToken(token)
 
   def getRawFilterStream(self):
     rawFilterStream = FilterStream()
@@ -57,5 +61,11 @@ class TweetSaver:
   def getParseStream(self):
     parseStream = ParseStream()
     parseStream.addParser(TweetParser(open('resources/stopwords_formatted.1.txt')))
+    parseStream.addParser(QuotationParser())
 
     return parseStream
+  
+  def getTokenFilterStream(self):
+    tokenFilterStream = FilterStream()
+    tokenFilterStream.addFilter(PunctuationFilter(open('resources/punctuation_words.txt')))
+    return tokenFilterStream
