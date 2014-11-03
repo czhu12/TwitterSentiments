@@ -1,3 +1,4 @@
+from article_analyzer.article_analyzer import ArticleAnalyzer
 from persistence.tweet_saver import TweetSaver
 from twitter.twitter_stream import TwitterStream
 

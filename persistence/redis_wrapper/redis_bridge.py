@@ -17,6 +17,9 @@ class RedisBridge:
   def rIncrement(self, key):
     self.redis.incr(key, amount=1)
 
+  def rGet(self, key):
+    return self.redis.get(key)
+
   def addAll(self, keys):
     for key in keys:
       self.addToken(key)
