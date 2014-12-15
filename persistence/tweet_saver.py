@@ -23,7 +23,7 @@ class TweetSaver:
   def notify(self, raw_tweet):
     try: 
       self.handleNotification(raw_tweet)
-    except UnicodeEncodeError:
+    except:
       return
 
   def handleNotification(self, tweet):
