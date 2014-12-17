@@ -1,4 +1,5 @@
 import nltk
+from filters.token_filters.url_filter import URLFilter
 from filters.token_filters.punctuation_filter import PunctuationFilter
 from filters.raw_filters.exists_filter import ExistsFilter
 from parsers.raw_parsers.raw_tweet_parser import RawTweetParser
@@ -29,14 +30,18 @@ class TweetSaver:
   def handleNotification(self, tweet):
     if self.rawFilterStream.filter(tweet):
       rawParseOut = self.rawParseStream.parse(tweet)
+
       if self.filterStream.filter(rawParseOut):
         parseOut = self.parseStream.parse(rawParseOut)
         self.save(parseOut)
 
   def save(self, parsedTweet):
+    # Gets here only if the tweet should be saved.
     tokenized = nltk.word_tokenize(parsedTweet)
+
     for i in range(0, len(tokenized)):
       token = tokenized[i]
+
       if self.tokenFilterStream.filter(token):
         self.redisBridge.addToken(token)
 
@@ -68,4 +73,5 @@ class TweetSaver:
   def getTokenFilterStream(self):
     tokenFilterStream = FilterStream()
     tokenFilterStream.addFilter(PunctuationFilter(open('resources/punctuation_words.txt')))
+    tokenFilterStream.addFilter(URLFilter())
     return tokenFilterStream

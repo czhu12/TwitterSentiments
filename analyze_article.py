@@ -8,6 +8,7 @@ def main():
   file_name = raw_input('Please enter name of file: \n')
   articleParser = ArticleParser(open('resources/example_articles/' + file_name))
   tokens = articleParser.getTokens()
+  print tokens
   sortedTokens = sorted(tokens.items(), key=operator.itemgetter(1))
   calculator = DefaultRatioCalculator()
   articleAnalyzer = ArticleAnalyzer(calculator)

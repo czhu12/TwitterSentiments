@@ -6,7 +6,7 @@ def main():
 def scanRedis(data, redisHandle):
   print data
   for key in data:
-    redisHandle.rDel(key)
+    redisHandle.rDelete(key)
 
 if __name__ == "__main__":
   main()

@@ -30,8 +30,8 @@ class RedisBridge:
   def clear(self):
     self.redis.flushall()
 
-  def rDel(self, key):
-    self.redis.del key
+  def rDelete(self, key):
+    self.redis.delete(key)
 
   def scanAll(dataCallback):
     first = True
